@@ -8,12 +8,12 @@
 #include <stdlib.h>
 #include "jit.h"
 
-static inline LLVMValueRef jit_visit(ASTNode *node, LLVMBuilderRef builder) {
+static inline LLVMValueRef JIT_visit(ASTNode *node, LLVMBuilderRef builder) {
   switch(node->type) {
     case AST_BINARY_OP: {
       ASTBinaryOp *binary_op = (ASTBinaryOp*)node;
-      LLVMValueRef a = jit_visit(binary_op->lhs, builder);
-      LLVMValueRef b = jit_visit(binary_op->rhs, builder);
+      LLVMValueRef a = JIT_visit(binary_op->lhs, builder);
+      LLVMValueRef b = JIT_visit(binary_op->rhs, builder);
       switch(binary_op->op) {
         case '+': return LLVMBuildAdd(builder, a, b, "a + b");
         case '-': return LLVMBuildSub(builder, a, b, "a - b");
@@ -42,7 +42,7 @@ JITCompiledProgram JIT_compile(ASTNode *node)
 
   LLVMPositionBuilderAtEnd(builder, entry);
 
-  LLVMValueRef res = jit_visit(node, builder);
+  LLVMValueRef res = JIT_visit(node, builder);
 
   LLVMBuildRet(builder, res);
   LLVMVerifyModule(mod, LLVMAbortProcessAction, &error);
