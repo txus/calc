@@ -68,12 +68,10 @@ const char* Token_to_s(Token token) {
 
 const char* Tokens_to_s(Tokens tokens) {
   char *str = calloc(55 * tokens.count, sizeof(char));
-  strcat(str, "[");
   for(int i = 0; i < tokens.count; i++) {
     Token token = tokens.start[i];
     strcat(str, Token_to_s(token));
-    if(i != tokens.count) strcat(str, ", ");
+    if(i != tokens.count - 1) strcat(str, ", ");
   }
-  strcat(str, "]");
   return (const char*)str;
 }
