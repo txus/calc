@@ -3,9 +3,6 @@
 Calc is a proof of concept to implement a simple arithmetic language
 interpreter with JIT compilation, using LLVM.
 
-**Note**: the JIT mode doesn't work yet. It falls back to an AST-walking
-interpreter.
-
 A fun weekend project, if you ask me!
 
 # Install

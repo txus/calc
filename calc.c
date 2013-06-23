@@ -11,7 +11,7 @@
 
 #define CALC_VERSION "0.0.1"
 
-ASTNode* code_to_ast(char const *code)
+static inline ASTNode* code_to_ast(char const *code)
 {
   debug("Program: %s", code);
 
@@ -24,7 +24,7 @@ ASTNode* code_to_ast(char const *code)
   return node;
 }
 
-void print_usage_banner() {
+static inline void print_usage_banner() {
   printf("Calc %s\n", CALC_VERSION);
   printf("\tUsage: ./calc [--jit] \"2 * (4 + 5)\"\n");
 }
@@ -32,10 +32,11 @@ void print_usage_banner() {
 int main (int argc, char const *argv[])
 {
   if(argc < 2) {
-    fprintf(stderr, "Usage: ./calc \"3 + 3\"\n");
+    print_usage_banner();
     return -1;
   }
   int jit = 0;
+
   const char *code;
   for(int i=0; i < argc; i++) {
     if(strcmp(argv[i], "--jit") == 0 ||
@@ -54,10 +55,8 @@ int main (int argc, char const *argv[])
 
   int result;
   if(jit) {
-    debug("MODE: JIT");
-    printf("Error: JIT mode not supported yet.\n");
-    return 0;
-    result = jit_compile(root);
+    debug("MODE: JIT Compiler");
+    result = JIT_evaluate(root);
   } else {
     debug("MODE: AST-Walking interpreter");
     result = interpret(root);

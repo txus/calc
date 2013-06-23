@@ -1,6 +1,6 @@
 CC=clang
 CFLAGS=-g -std=c11 -Wall -Werror `llvm-config --cflags`
-LD=clang
+LD=g++
 LDFLAGS=`llvm-config --libs --cflags --ldflags core analysis executionengine jit interpreter native`
 
 calc: calc.o lexer.o parser.o list.o interpreter.o jit.o
