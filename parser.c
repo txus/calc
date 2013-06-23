@@ -66,7 +66,7 @@ const char* ASTNode_to_sexp(ASTNode *node) {
       ASTBinaryOp *binary_op = (ASTBinaryOp*)node;
       const char *lhs = ASTNode_to_sexp(binary_op->lhs);
       const char *rhs = ASTNode_to_sexp(binary_op->rhs);
-      char *buf = malloc(5 + sizeof(lhs) + sizeof(rhs));
+      char *buf = malloc(1000);
       sprintf(buf, "(%c ", binary_op->op);
 
       strcat(buf, lhs);

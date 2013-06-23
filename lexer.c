@@ -45,22 +45,23 @@ Tokens tokenize(const char *code) {
             case ')': ADD_TOKEN(T_RPAREN); break;
           }
         }
+        ch++;
         break;
       }
       case LEX_NUMBER: {
         current_number[current_number_idx] = *ch;
-        if(!isdigit(next)) {
+        if(isdigit(next)) {
+          current_number_idx++;
+          ch++;
+        } else {
           ADD_TOKEN(T_NUMBER, .value = atoi(current_number));
           state = LEX_NORMAL;
-        } else {
-          current_number_idx++;
         }
         break;
       }
       case LEX_END: break;
     }
     if(!next) state = LEX_END;
-    ch++;
   }
 
   return (Tokens) {
