@@ -13,12 +13,6 @@ static inline Token* allocate_tokens(Token tokens[], unsigned int count)
   return allocated;
 }
 
-typedef enum {
-  LEX_NORMAL,
-  LEX_NUMBER,
-  LEX_END
-} lexer_state;
-
 #define ADD_TOKEN(A, ...) tokens[token_count] = (Token){ .type = (A), ##__VA_ARGS__ }; token_count++;
 
 Tokens tokenize(const char *code) {
