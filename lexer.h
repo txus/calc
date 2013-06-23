@@ -8,12 +8,6 @@ typedef enum token_type {
   T_RPAREN
 } token_type;
 
-typedef enum lexer_state {
-  LEX_NORMAL,
-  LEX_NUMBER,
-  LEX_END
-} lexer_state;
-
 struct token_s {
   token_type type;
   int value;

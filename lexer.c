@@ -13,55 +13,32 @@ static inline Token* allocate_tokens(Token tokens[], unsigned int count)
   return allocated;
 }
 
-#define ADD_TOKEN(A, ...) tokens[token_count] = (Token){ .type = (A), ##__VA_ARGS__ }; token_count++;
+#define EMIT(A, ...) tokens[token_count] = (Token){ .type = (A), ##__VA_ARGS__ }; token_count++;
 
 Tokens tokenize(const char *code) {
   Token tokens[200];
   unsigned int token_count = 0;
 
-  lexer_state state = LEX_NORMAL;
+  char *ptr = (char*)code;
 
-  char *ch = (char*)code;
-  ch--;
-  char current_number[20] = {'\0'};
-  int current_number_idx = 0;
-  while(ch && state != LEX_END) {
-    char next = *(ch + 1);
-    switch(state) {
-      case LEX_NORMAL: {
-        if(isdigit(next)) {
-          memset(&current_number, 0, 20);
-          current_number_idx= 0;
-          state = LEX_NUMBER;
-        } else if(isspace(next)) {
-          // skip
-        } else {
-          switch(next) {
-            case '+':
-            case '-':
-            case '*':
-            case '/': ADD_TOKEN(T_OPERATOR, .value = next); break;
-            case '(': ADD_TOKEN(T_LPAREN); break;
-            case ')': ADD_TOKEN(T_RPAREN); break;
-          }
-        }
-        ch++;
-        break;
+  while(*ptr) {
+    while(*ptr == ' ') ptr++;
+    int number;
+    int consumed;
+    if (sscanf(ptr, "%d%n", &number, &consumed) == 1) {
+      EMIT(T_NUMBER, .value = number);
+      ptr += consumed;
+    } else {
+      switch(*ptr) {
+        case '+':
+        case '-':
+        case '*':
+        case '/': EMIT(T_OPERATOR, .value = *ptr); break;
+        case '(': EMIT(T_LPAREN); break;
+        case ')': EMIT(T_RPAREN); break;
       }
-      case LEX_NUMBER: {
-        current_number[current_number_idx] = *ch;
-        if(isdigit(next)) {
-          current_number_idx++;
-          ch++;
-        } else {
-          ADD_TOKEN(T_NUMBER, .value = atoi(current_number));
-          state = LEX_NORMAL;
-        }
-        break;
-      }
-      case LEX_END: break;
+      ptr++;
     }
-    if(!next) state = LEX_END;
   }
 
   return (Tokens) {
