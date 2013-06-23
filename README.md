@@ -7,7 +7,7 @@ A fun weekend project, if you ask me!
 
 # Install
 
-You need LLVm installed. On Mac OSX:
+You need LLVM installed. On Mac OSX:
 
     $ brew install llvm
 
