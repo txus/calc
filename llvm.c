@@ -6,14 +6,14 @@
 #include <llvm-c/Transforms/Scalar.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "jit.h"
+#include "llvm.h"
 
-static inline LLVMValueRef JIT_visit(ASTNode *node, LLVMBuilderRef builder) {
+static inline LLVMValueRef LLVM_visit(ASTNode *node, LLVMBuilderRef builder) {
   switch(node->type) {
     case AST_BINARY_OP: {
       ASTBinaryOp *binary_op = (ASTBinaryOp*)node;
-      LLVMValueRef a = JIT_visit(binary_op->lhs, builder);
-      LLVMValueRef b = JIT_visit(binary_op->rhs, builder);
+      LLVMValueRef a = LLVM_visit(binary_op->lhs, builder);
+      LLVMValueRef b = LLVM_visit(binary_op->rhs, builder);
       switch(binary_op->op) {
         case '+': return LLVMBuildAdd(builder, a, b, "a + b");
         case '-': return LLVMBuildSub(builder, a, b, "a - b");
@@ -27,7 +27,7 @@ static inline LLVMValueRef JIT_visit(ASTNode *node, LLVMBuilderRef builder) {
   }
 }
 
-JITCompiledProgram JIT_compile(ASTNode *node)
+LLVMCompiledProgram LLVM_compile(ASTNode *node)
 {
   char *error = NULL; // Used to retrieve messages from functions
   LLVMLinkInJIT();
@@ -42,7 +42,7 @@ JITCompiledProgram JIT_compile(ASTNode *node)
 
   LLVMPositionBuilderAtEnd(builder, entry);
 
-  LLVMValueRef res = JIT_visit(node, builder);
+  LLVMValueRef res = LLVM_visit(node, builder);
 
   LLVMBuildRet(builder, res);
   LLVMVerifyModule(mod, LLVMAbortProcessAction, &error);
@@ -50,10 +50,10 @@ JITCompiledProgram JIT_compile(ASTNode *node)
 
   LLVMDisposeBuilder(builder);
 
-  return (JITCompiledProgram) { .module = mod, .function = program };
+  return (LLVMCompiledProgram) { .module = mod, .function = program };
 }
 
-int JIT_execute(JITCompiledProgram program)
+int LLVM_execute(LLVMCompiledProgram program)
 {
   LLVMModuleRef module = program.module;
   LLVMValueRef function = program.function;
@@ -93,8 +93,8 @@ int JIT_execute(JITCompiledProgram program)
   return result;
 }
 
-int JIT_evaluate(ASTNode *node)
+int LLVM_evaluate(ASTNode *node)
 {
-  JITCompiledProgram program = JIT_compile(node);
-  return JIT_execute(program);
+  LLVMCompiledProgram program = LLVM_compile(node);
+  return LLVM_execute(program);
 }

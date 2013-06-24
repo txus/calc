@@ -6,7 +6,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "interpreter.h"
-#include "jit.h"
+#include "llvm.h"
 #include "dbg.h"
 
 #define CALC_VERSION "0.0.1"
@@ -26,7 +26,7 @@ static inline ASTNode* code_to_ast(char const *code)
 
 static inline void print_usage_banner() {
   printf("Calc %s\n", CALC_VERSION);
-  printf("\tUsage: ./calc [--jit] \"2 * (4 + 5)\"\n");
+  printf("\tUsage: ./calc [--llvm] \"2 * (4 + 5)\"\n");
 }
 
 int main (int argc, char const *argv[])
@@ -35,13 +35,12 @@ int main (int argc, char const *argv[])
     print_usage_banner();
     return -1;
   }
-  int jit = 0;
+  int llvm = 0;
 
   const char *code;
   for(int i=0; i < argc; i++) {
-    if(strcmp(argv[i], "--jit") == 0 ||
-       strcmp(argv[i], "-j") == 0) {
-      jit = 1;
+    if(strcmp(argv[i], "--llvm") == 0) {
+      llvm = 1;
     } else if(strcmp(argv[i], "--help") == 0 ||
               strcmp(argv[i], "-h") == 0) {
       print_usage_banner();
@@ -54,9 +53,9 @@ int main (int argc, char const *argv[])
   ASTNode *root = code_to_ast(code);
 
   int result;
-  if(jit) {
-    debug("MODE: JIT Compiler");
-    result = JIT_evaluate(root);
+  if(llvm) {
+    debug("MODE: LLVM-powered llvm Compiler");
+    result = LLVM_evaluate(root);
   } else {
     debug("MODE: AST-Walking interpreter");
     result = interpret(root);
