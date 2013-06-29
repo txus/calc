@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-ggdb -std=c11 -Wall `llvm-config --cflags`
+CFLAGS=-ggdb -std=c99 -Wall `llvm-config --cflags`
 LD=g++
 LDFLAGS=`llvm-config --libs --cflags --ldflags core analysis executionengine jit interpreter native`
 
