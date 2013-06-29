@@ -1,15 +1,16 @@
 # calc
 
 Calc is a proof of concept to implement a simple arithmetic language
-interpreter with JIT compilation, using LLVM.
+interpreter with JIT compilation, using either LLVM or a more low-level JIT
+based on GNU Lightning.
 
 A fun weekend project, if you ask me!
 
 # Install
 
-You need LLVM installed. On Mac OSX:
+You need LLVM and GNU Lightning installed. On Mac OSX:
 
-    $ brew install llvm
+    $ brew install llvm lightning
 
 Now:
 
@@ -21,9 +22,17 @@ You get the `calc` executable.
 
 ## Usage
 
-    $ ./calc [--jit] "3 * (4 + 5)"
+Using the AST-walking interpreter:
 
-When run without `--jit`, it falls back to an AST-walking interpreter.
+    $ ./calc "3 * (4 + 5)"
+
+Using the LLVM JIT compiler:
+
+    $ ./calc --llvm "3 * (4 + 5)"
+
+Using the lower-level, GNU-lightning based JIT compiler:
+
+    $ ./calc --jit "3 * (4 + 5)"
 
 ## Syntax
 

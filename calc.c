@@ -7,6 +7,7 @@
 #include "parser.h"
 #include "interpreter.h"
 #include "llvm.h"
+#include "jit.h"
 #include "dbg.h"
 
 #define CALC_VERSION "0.0.1"
@@ -36,15 +37,20 @@ int main (int argc, char const *argv[])
     return -1;
   }
   int llvm = 0;
+  int jit = 0;
 
   const char *code;
   for(int i=0; i < argc; i++) {
     if(strcmp(argv[i], "--llvm") == 0) {
       llvm = 1;
+      jit = 0;
     } else if(strcmp(argv[i], "--help") == 0 ||
               strcmp(argv[i], "-h") == 0) {
       print_usage_banner();
       return 0;
+    } else if(strcmp(argv[i], "--jit") == 0) {
+      llvm = 0;
+      jit = 1;
     } else {
       code = argv[i];
     }
@@ -54,8 +60,11 @@ int main (int argc, char const *argv[])
 
   int result;
   if(llvm) {
-    debug("MODE: LLVM-powered llvm Compiler");
+    debug("MODE: LLVM-powered JIT Compiler");
     result = LLVM_evaluate(root);
+  } else if (jit) {
+    debug("MODE: GNU-lightning JIT Compiler");
+    result = JIT_evaluate(root);
   } else {
     debug("MODE: AST-Walking interpreter");
     result = interpret(root);

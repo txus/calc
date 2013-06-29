@@ -1,10 +1,10 @@
 CC=clang
-CFLAGS=-g -std=c11 -Wall -Werror `llvm-config --cflags`
+CFLAGS=-ggdb -std=c11 -Wall `llvm-config --cflags`
 LD=g++
 LDFLAGS=`llvm-config --libs --cflags --ldflags core analysis executionengine jit interpreter native`
 
-calc: calc.o lexer.o parser.o list.o interpreter.o llvm.o
-	$(LD) calc.o lexer.o parser.o list.o interpreter.o llvm.o $(LDFLAGS) -o calc
+calc: calc.o lexer.o parser.o list.o interpreter.o llvm.o jit.o
+	$(LD) calc.o lexer.o parser.o list.o interpreter.o llvm.o jit.o $(LDFLAGS) -o calc
 
 calc.o: calc.c
 	$(CC) $(CFLAGS) -c calc.c
@@ -23,6 +23,9 @@ interpreter.o: interpreter.c
 
 llvm.o: llvm.c
 	$(CC) $(CFLAGS) -c llvm.c
+
+jit.o: jit.c
+	$(CC) $(CFLAGS) -c jit.c
 
 clean:
 	-rm -rf calc *.o
