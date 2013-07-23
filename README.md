@@ -10,7 +10,10 @@ A fun weekend project, if you ask me!
 
 You need LLVM and GNU Lightning installed. On Mac OSX:
 
-    $ brew install llvm lightning
+    $ brew install llvm
+
+Unfortunately the version of Lightning in Homebrew is broken. Download and
+install lightning from its [mirror git repository][lightning].
 
 Now:
 
@@ -45,3 +48,4 @@ license. I'm [@txustice][twitter] on twitter (where you should probably follow
 me!).
 
 [twitter]: https://twitter.com/txustice
+[lightning]: https://github.com/bonzini/lightning
